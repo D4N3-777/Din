@@ -11,8 +11,16 @@ COPY src/Din.sln ./
 COPY src/nuget.config ./
 RUN dotnet restore ./
 
-# Copy everything else and build
+# Copy everything else
 COPY src/ ./
+
+# Restore npm packages
+WORKDIR ./Din
+RUN npm i
+RUN gulp build
+
+# Publish
+WORKDIR /app
 RUN dotnet publish ./Din/ -c Release -o out
 
 # Build runtime image
